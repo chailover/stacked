@@ -37,6 +37,14 @@ interface StudySession {
   completed: boolean;
 }
 
+interface PreparationStep {
+  id: string;
+  title: string;
+  description: string;
+  completed: boolean;
+  dueDate: string;
+}
+
 interface StudyQuestionnaire {
   totalHours: number;
   frequency: 'daily' | 'every_other_day' | 'weekly';
