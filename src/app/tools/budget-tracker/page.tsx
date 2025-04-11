@@ -126,14 +126,7 @@ const BudgetTracker = () => {
     return { income, expenses, balance: income - expenses };
   };
 
-  const getCategoryTotals = (type: 'income' | 'expense'): CategoryTotal => {
-    return getTimeframeTransactions()
-      .filter(t => t.type === type)
-      .reduce((totals, t) => {
-        totals[t.category] = (totals[t.category] || 0) + t.amount;
-        return totals;
-      }, {} as CategoryTotal);
-  };
+
 
   const { income, expenses, balance } = calculateTotals();
 
