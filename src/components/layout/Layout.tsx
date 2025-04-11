@@ -1,6 +1,5 @@
 import React from 'react';
 import Link from 'next/link';
-import AuthButtons from '@/components/auth/AuthButtons';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -18,9 +17,6 @@ export default function Layout({ children }: LayoutProps) {
                   Stacked
                 </Link>
               </div>
-            </div>
-            <div className="flex items-center">
-              <AuthButtons />
             </div>
           </div>
         </nav>
