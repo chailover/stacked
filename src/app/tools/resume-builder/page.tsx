@@ -54,14 +54,6 @@ interface Project {
   achievements?: string[];
 }
 
-interface Award {
-  id: string;
-  title: string;
-  organization: string;
-  date: string;
-  description?: string;
-}
-
 interface CustomSection {
   id: string;
   title: string;
@@ -191,7 +183,7 @@ const placeholderData = {
   }]
 };
 
-export default function ResumeBuilder() {
+const ResumeBuilder = () => {
   const [personalInfo, setPersonalInfo] = useState<PersonalInfo>({
     firstName: '',
     lastName: '',
@@ -1335,4 +1327,6 @@ export default function ResumeBuilder() {
       </div>
     </div>
   );
-} 
+};
+
+export default ResumeBuilder; 

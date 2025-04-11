@@ -5,19 +5,21 @@ import {
   Chart as ChartJS,
   CategoryScale,
   LinearScale,
-  BarElement,
+  PointElement,
+  LineElement,
   Title,
   Tooltip,
   Legend,
   ArcElement,
 } from 'chart.js';
-import { Bar, Pie } from 'react-chartjs-2';
+import { Line } from 'react-chartjs-2';
 
 // Register ChartJS components
 ChartJS.register(
   CategoryScale,
   LinearScale,
-  BarElement,
+  PointElement,
+  LineElement,
   Title,
   Tooltip,
   Legend,
@@ -214,7 +216,7 @@ export default function CollegeCostEstimator() {
           <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 p-6">
             <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">Cost Breakdown</h2>
             <div className="h-80">
-              <Pie
+              <Line
                 data={chartData}
                 options={{
                   maintainAspectRatio: false,

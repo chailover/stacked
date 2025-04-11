@@ -5,19 +5,21 @@ import {
   Chart as ChartJS,
   CategoryScale,
   LinearScale,
-  BarElement,
+  PointElement,
+  LineElement,
   Title,
   Tooltip,
   Legend,
   ArcElement,
 } from 'chart.js';
-import { Bar, Pie } from 'react-chartjs-2';
+import { Line } from 'react-chartjs-2';
 
 // Register ChartJS components
 ChartJS.register(
   CategoryScale,
   LinearScale,
-  BarElement,
+  PointElement,
+  LineElement,
   Title,
   Tooltip,
   Legend,
@@ -56,7 +58,7 @@ const DEFAULT_EXPENSE_CATEGORIES = [
   'Other Expenses'
 ];
 
-export default function BudgetTracker() {
+const BudgetTracker = () => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [customCategories, setCustomCategories] = useState<{
     income: string[];
@@ -148,26 +150,7 @@ export default function BudgetTracker() {
   };
 
   const { income, expenses, balance } = calculateTotals();
-  const incomeTotals = getCategoryTotals('income');
   const expenseTotals = getCategoryTotals('expense');
-
-  const chartData = {
-    labels: Object.keys(expenseTotals),
-    datasets: [
-      {
-        label: 'Expenses by Category',
-        data: Object.values(expenseTotals),
-        backgroundColor: [
-          'rgba(255, 99, 132, 0.8)',
-          'rgba(54, 162, 235, 0.8)',
-          'rgba(255, 206, 86, 0.8)',
-          'rgba(75, 192, 192, 0.8)',
-          'rgba(153, 102, 255, 0.8)',
-          'rgba(255, 159, 64, 0.8)',
-        ],
-      },
-    ],
-  };
 
   const deleteTransaction = (id: string) => {
     setTransactions(transactions.filter(t => t.id !== id));
@@ -214,62 +197,6 @@ export default function BudgetTracker() {
       category: DEFAULT_EXPENSE_CATEGORIES[0],
       isCustomCategory: false,
     });
-  };
-
-  // Get monthly data for the bar chart
-  const getMonthlyData = () => {
-    const months = Array.from({ length: 6 }, (_, i) => {
-      const date = new Date();
-      date.setMonth(date.getMonth() - i);
-      return date.toLocaleString('default', { month: 'short' });
-    }).reverse();
-
-    const monthlyTotals = months.map(month => {
-      const monthTransactions = transactions.filter(t => {
-        const transDate = new Date(t.date);
-        return transDate.toLocaleString('default', { month: 'short' }) === month;
-      });
-
-      const income = monthTransactions
-        .filter(t => t.type === 'income')
-        .reduce((sum, t) => sum + t.amount, 0);
-
-      const expenses = monthTransactions
-        .filter(t => t.type === 'expense')
-        .reduce((sum, t) => sum + t.amount, 0);
-
-      return { month, income, expenses };
-    });
-
-    return {
-      labels: monthlyTotals.map(d => d.month),
-      datasets: [
-        {
-          label: 'Income',
-          data: monthlyTotals.map(d => d.income),
-          backgroundColor: 'rgba(34, 197, 94, 0.8)',
-          borderColor: 'rgb(34, 197, 94)',
-          borderWidth: 1,
-        },
-        {
-          label: 'Expenses',
-          data: monthlyTotals.map(d => d.expenses),
-          backgroundColor: 'rgba(239, 68, 68, 0.8)',
-          borderColor: 'rgb(239, 68, 68)',
-          borderWidth: 1,
-        },
-      ],
-    };
-  };
-
-  const barChartOptions = {
-    responsive: true,
-    maintainAspectRatio: false,
-    scales: {
-      y: {
-        beginAtZero: true,
-      },
-    },
   };
 
   return (
@@ -412,17 +339,7 @@ export default function BudgetTracker() {
           <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 p-6">
             <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Expense Breakdown</h2>
             <div className="h-80">
-              <Pie
-                data={chartData}
-                options={{
-                  maintainAspectRatio: false,
-                  plugins: {
-                    legend: {
-                      position: 'right',
-                    },
-                  },
-                }}
-              />
+              {/* Remove the Pie chart */}
             </div>
           </div>
         </div>
@@ -495,3 +412,5 @@ export default function BudgetTracker() {
     </div>
   );
 }
+
+export default BudgetTracker;

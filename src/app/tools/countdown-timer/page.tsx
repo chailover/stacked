@@ -220,106 +220,73 @@ export default function CountdownTimer() {
   const generateStudySchedule = () => {
     if (!selectedTimer || !studyQuestionnaire.totalHours) return;
 
-    const targetDate = new Date(selectedTimer.targetDate);
-    const now = new Date();
-    const daysUntilEvent = Math.ceil((targetDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
-    
-    let availableDays = daysUntilEvent;
-    if (studyQuestionnaire.avoidWeekends) {
-      // Count weekdays only
-      const startDate = new Date(now);
-      let weekdays = 0;
-      for (let i = 0; i < daysUntilEvent; i++) {
-        const day = new Date(startDate);
-        day.setDate(startDate.getDate() + i);
-        if (day.getDay() !== 0 && day.getDay() !== 6) {
-          weekdays++;
-        }
-      }
-      availableDays = weekdays;
-    }
-
     const sessions: StudySession[] = [];
-    let remainingHours = studyQuestionnaire.totalHours;
-    let currentDate = new Date(now);
+    const startDate = new Date();
+    const endDate = new Date(selectedTimer.targetDate);
+    const totalDays = Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24));
+    const availableDays = totalDays - (studyQuestionnaire.avoidWeekends ? Math.floor(totalDays / 7) * 2 : 0);
+    const hoursPerSession = studyQuestionnaire.totalHours / availableDays;
 
-    while (remainingHours > 0 && currentDate < targetDate) {
-      // Skip weekends if avoidWeekends is true
-      if (studyQuestionnaire.avoidWeekends && (currentDate.getDay() === 0 || currentDate.getDay() === 6)) {
-        currentDate.setDate(currentDate.getDate() + 1);
-        continue;
+    let currentDate = new Date(startDate);
+    while (currentDate < endDate) {
+      if (!studyQuestionnaire.avoidWeekends || (currentDate.getDay() !== 0 && currentDate.getDay() !== 6)) {
+        const session: StudySession = {
+          id: Date.now().toString(),
+          date: currentDate.toISOString().split('T')[0],
+          startTime: '',
+          endTime: '',
+          hours: hoursPerSession,
+          completed: false,
+        };
+
+        // Set time based on preference
+        switch (studyQuestionnaire.preferredTime) {
+          case 'morning':
+            session.startTime = `${currentDate.toISOString().split('T')[0]}T09:00:00`;
+            session.endTime = `${currentDate.toISOString().split('T')[0]}T12:00:00`;
+            break;
+          case 'afternoon':
+            session.startTime = `${currentDate.toISOString().split('T')[0]}T13:00:00`;
+            session.endTime = `${currentDate.toISOString().split('T')[0]}T17:00:00`;
+            break;
+          case 'evening':
+            session.startTime = `${currentDate.toISOString().split('T')[0]}T18:00:00`;
+            session.endTime = `${currentDate.toISOString().split('T')[0]}T21:00:00`;
+            break;
+        }
+
+        sessions.push(session);
       }
-
-      // Calculate hours for this session based on frequency
-      let sessionHours = 0;
-      if (studyQuestionnaire.frequency === 'daily') {
-        sessionHours = Math.min(2, remainingHours); // Max 2 hours per day
-      } else if (studyQuestionnaire.frequency === 'every_other_day') {
-        sessionHours = Math.min(3, remainingHours); // Max 3 hours every other day
-      } else {
-        sessionHours = Math.min(4, remainingHours); // Max 4 hours per week
-      }
-
-      // Set start and end times based on preferred time
-      let startHour = 9; // Default to morning
-      if (studyQuestionnaire.preferredTime === 'afternoon') {
-        startHour = 13;
-      } else if (studyQuestionnaire.preferredTime === 'evening') {
-        startHour = 18;
-      }
-
-      const startTime = new Date(currentDate);
-      startTime.setHours(startHour, 0, 0, 0);
-      
-      const endTime = new Date(startTime);
-      endTime.setHours(startHour + sessionHours);
-
-      sessions.push({
-        id: Date.now().toString() + Math.random(),
-        date: currentDate.toISOString().split('T')[0],
-        startTime: startTime.toISOString(),
-        endTime: endTime.toISOString(),
-        hours: sessionHours,
-        completed: false,
-      });
-
-      remainingHours -= sessionHours;
-
-      // Move to next session date based on frequency
-      if (studyQuestionnaire.frequency === 'daily') {
-        currentDate.setDate(currentDate.getDate() + 1);
-      } else if (studyQuestionnaire.frequency === 'every_other_day') {
-        currentDate.setDate(currentDate.getDate() + 2);
-      } else {
-        currentDate.setDate(currentDate.getDate() + 7);
-      }
+      currentDate.setDate(currentDate.getDate() + 1);
     }
 
-    // Update timer with study schedule
-    setTimers(timers.map(t => 
-      t.id === selectedTimer.id 
-        ? { 
-            ...t, 
-            studySchedule: {
-              ...studyQuestionnaire,
-              sessions
-            }
-          }
-        : t
+    setTimers(timers.map(timer => 
+      timer.id === selectedTimer.id 
+        ? { ...timer, studySchedule: { ...studyQuestionnaire, sessions } }
+        : timer
     ));
 
-    // Reset questionnaire state
+    setShowQuestionnaire(false);
     setStudyQuestionnaire({
       totalHours: 0,
       frequency: 'daily',
       preferredTime: 'morning',
       avoidWeekends: true,
     });
-    setShowQuestionnaire(false);
   };
 
   const getCalendarEvents = () => {
-    const events: any[] = [];
+    const events: Array<{
+      id: string;
+      title: string;
+      start: string;
+      end?: string;
+      allDay?: boolean;
+      backgroundColor: string;
+      borderColor: string;
+      textColor: string;
+      classNames: string[];
+    }> = [];
 
     timers.forEach(timer => {
       // Add main event
