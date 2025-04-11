@@ -20,6 +20,8 @@ interface Education {
   startDate: string;
   endDate: string;
   gpa?: string;
+  location: string;
+  description: string;
 }
 
 interface Experience {
@@ -27,13 +29,8 @@ interface Experience {
   position: string;
   startDate: string;
   endDate: string;
+  location: string;
   description: string;
-}
-
-interface Skill {
-  id: string;
-  category: string;
-  items: string[];
 }
 
 interface Project {
@@ -48,6 +45,14 @@ interface Project {
   achievements?: string[];
 }
 
+interface Activity {
+  organization: string;
+  role: string;
+  startDate: string;
+  endDate: string;
+  description: string;
+}
+
 interface CustomSection {
   id: string;
   title: string;
@@ -55,14 +60,6 @@ interface CustomSection {
     id: string;
     content: string[];
   }[];
-}
-
-interface Activity {
-  organization: string;
-  role: string;
-  startDate: string;
-  endDate: string;
-  description: string;
 }
 
 // Add placeholder data for preview
@@ -379,6 +376,8 @@ const ResumeBuilder = () => {
                           startDate: '',
                           endDate: '',
                           gpa: '',
+                          location: '',
+                          description: '',
                         },
                       ]);
                     }}
@@ -515,6 +514,7 @@ const ResumeBuilder = () => {
                           position: '',
                           startDate: '',
                           endDate: '',
+                          location: '',
                           description: '',
                         },
                       ]);
@@ -633,14 +633,15 @@ const ResumeBuilder = () => {
                       setProjects([
                         ...projects,
                         {
-                          id: Date.now().toString(),
+                          id: '',
                           name: '',
                           description: '',
                           technologies: [''],
                           startDate: '',
                           endDate: '',
                           current: false,
-                          achievements: [''],
+                          url: '',
+                          achievements: [],
                         },
                       ]);
                     }}

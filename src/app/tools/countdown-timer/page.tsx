@@ -37,6 +37,14 @@ interface StudySession {
   completed: boolean;
 }
 
+interface PreparationStep {
+  id: string;
+  title: string;
+  description: string;
+  completed: boolean;
+  dueDate: string;
+}
+
 interface StudyQuestionnaire {
   totalHours: number;
   frequency: 'daily' | 'every_other_day' | 'weekly';
@@ -65,13 +73,6 @@ export default function CountdownTimer() {
     avoidWeekends: true,
   });
   const [showQuestionnaire, setShowQuestionnaire] = useState(false);
-  const [currentStep, setCurrentStep] = useState(0);
-  const [studyTime, setStudyTime] = useState('');
-  const [preparationTime, setPreparationTime] = useState('');
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-  const [timerType, setTimerType] = useState<'test' | 'competition'>('test');
-  const [preparationSteps, setPreparationSteps] = useState<PreparationStep[]>([]);
-  const currentDate = new Date();
 
   // Load timers from localStorage on initial render
   useEffect(() => {
@@ -234,7 +235,7 @@ export default function CountdownTimer() {
     const availableDays = totalDays - (studyQuestionnaire.avoidWeekends ? Math.floor(totalDays / 7) * 2 : 0);
     const hoursPerSession = studyQuestionnaire.totalHours / availableDays;
 
-    let currentDate = new Date(startDate);
+    const currentDate = new Date(startDate);
     while (currentDate < endDate) {
       if (!studyQuestionnaire.avoidWeekends || (currentDate.getDay() !== 0 && currentDate.getDay() !== 6)) {
         const session: StudySession = {

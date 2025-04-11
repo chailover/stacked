@@ -60,7 +60,7 @@ const DEFAULT_EXPENSE_CATEGORIES = [
 
 const BudgetTracker = () => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
-  const [customCategories, setCustomCategories] = useState<{
+  const [customCategories] = useState<{
     income: string[];
     expense: string[];
   }>({
@@ -77,7 +77,6 @@ const BudgetTracker = () => {
   });
   const [timeframe, setTimeframe] = useState<'week' | 'month' | 'semester'>('month');
   const [editingTransaction, setEditingTransaction] = useState<Transaction | null>(null);
-  const [expenseList, setExpenseList] = useState<Transaction[]>([]);
 
   const addTransaction = () => {
     if (newTransaction.description && newTransaction.amount > 0) {
@@ -171,18 +170,24 @@ const BudgetTracker = () => {
 
     setEditingTransaction(null);
     setNewTransaction({
-      type: 'expense',
+      id: '',
+      description: '',
+      amount: 0,
       category: DEFAULT_EXPENSE_CATEGORIES[0],
-      isCustomCategory: false,
+      date: new Date().toISOString().split('T')[0],
+      type: 'expense',
     });
   };
 
   const cancelEditing = () => {
     setEditingTransaction(null);
     setNewTransaction({
-      type: 'expense',
+      id: '',
+      description: '',
+      amount: 0,
       category: DEFAULT_EXPENSE_CATEGORIES[0],
-      isCustomCategory: false,
+      date: new Date().toISOString().split('T')[0],
+      type: 'expense',
     });
   };
 
