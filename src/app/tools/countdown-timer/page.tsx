@@ -68,6 +68,9 @@ export default function CountdownTimer() {
   const [currentStep, setCurrentStep] = useState(0);
   const [studyTime, setStudyTime] = useState('');
   const [preparationTime, setPreparationTime] = useState('');
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [timerType, setTimerType] = useState<'test' | 'competition'>('test');
+  const [preparationSteps, setPreparationSteps] = useState<PreparationStep[]>([]);
   const currentDate = new Date();
 
   // Load timers from localStorage on initial render

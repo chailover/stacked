@@ -67,15 +67,7 @@ const BudgetTracker = () => {
     income: [],
     expense: [],
   });
-  const [newTransaction, setNewTransaction] = useState<Partial<Transaction>>({
-    type: 'expense',
-    category: DEFAULT_EXPENSE_CATEGORIES[0],
-    isCustomCategory: false,
-  });
-  const [timeframe, setTimeframe] = useState<'week' | 'month' | 'semester'>('month');
-  const [editingTransaction, setEditingTransaction] = useState<Transaction | null>(null);
-  const [expenseList, setExpenseList] = useState<Transaction[]>([]);
-  const [newExpense, setNewExpense] = useState<Transaction>({
+  const [newTransaction, setNewTransaction] = useState<Transaction>({
     id: '',
     description: '',
     amount: 0,
@@ -83,40 +75,26 @@ const BudgetTracker = () => {
     date: new Date().toISOString().split('T')[0],
     type: 'expense',
   });
+  const [timeframe, setTimeframe] = useState<'week' | 'month' | 'semester'>('month');
+  const [editingTransaction, setEditingTransaction] = useState<Transaction | null>(null);
+  const [expenseList, setExpenseList] = useState<Transaction[]>([]);
 
   const addTransaction = () => {
-    if (!newTransaction.description || !newTransaction.amount || !newTransaction.category) {
-      alert('Please fill in all required fields');
-      return;
+    if (newTransaction.description && newTransaction.amount > 0) {
+      const transaction: Transaction = {
+        ...newTransaction,
+        id: Date.now().toString(),
+      };
+      setTransactions([...transactions, transaction]);
+      setNewTransaction({
+        id: '',
+        description: '',
+        amount: 0,
+        category: '',
+        date: new Date().toISOString().split('T')[0],
+        type: 'expense',
+      });
     }
-
-    const transaction: Transaction = {
-      id: Date.now().toString(),
-      date: new Date().toISOString().split('T')[0],
-      description: newTransaction.description,
-      amount: Number(newTransaction.amount),
-      type: newTransaction.type || 'expense',
-      category: newTransaction.category,
-      isCustomCategory: newTransaction.isCustomCategory,
-    };
-
-    // If it's a custom category, add it to the list
-    if (newTransaction.isCustomCategory && newTransaction.category) {
-      const type = newTransaction.type || 'expense';
-      if (!customCategories[type].includes(newTransaction.category)) {
-        setCustomCategories(prev => ({
-          ...prev,
-          [type]: [...prev[type], newTransaction.category!],
-        }));
-      }
-    }
-
-    setTransactions([...transactions, transaction]);
-    setNewTransaction({
-      type: 'expense',
-      category: DEFAULT_EXPENSE_CATEGORIES[0],
-      isCustomCategory: false,
-    });
   };
 
   const getTimeframeTransactions = () => {

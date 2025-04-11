@@ -14,26 +14,20 @@ interface PersonalInfo {
 }
 
 interface Education {
-  id: string;
   school: string;
   degree: string;
   field: string;
-  location: string;
   startDate: string;
   endDate: string;
   gpa?: string;
-  achievements?: string[];
 }
 
 interface Experience {
-  id: string;
   company: string;
   position: string;
-  location: string;
   startDate: string;
   endDate: string;
-  current: boolean;
-  description: string[];
+  description: string;
 }
 
 interface Skill {
@@ -64,13 +58,11 @@ interface CustomSection {
 }
 
 interface Activity {
-  id: string;
   organization: string;
   role: string;
-  location: string;
   startDate: string;
   endDate: string;
-  description: string[];
+  description: string;
 }
 
 // Add placeholder data for preview
@@ -196,7 +188,7 @@ const ResumeBuilder = () => {
   const [experience, setExperience] = useState<Experience[]>([]);
   const [projects, setProjects] = useState<Project[]>([]);
   const [skills, setSkills] = useState<string[]>([]);
-  const [activities, setActivities] = useState<Activity[]>([]);
+  const [activities] = useState<Activity[]>([]);
 
   const [sections, setSections] = useState<{
     education: boolean;
@@ -381,15 +373,12 @@ const ResumeBuilder = () => {
                       setEducation([
                         ...education,
                         {
-                          id: Date.now().toString(),
                           school: '',
                           degree: '',
                           field: '',
-                          location: '',
                           startDate: '',
                           endDate: '',
                           gpa: '',
-                          achievements: [''],
                         },
                       ]);
                     }}
@@ -400,7 +389,7 @@ const ResumeBuilder = () => {
                 </div>
                 <div className="space-y-4">
                   {education.map((edu) => (
-                    <div key={edu.id} className="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
+                    <div key={edu.school} className="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
@@ -412,7 +401,7 @@ const ResumeBuilder = () => {
                             onChange={(e) => {
                               setEducation(
                                 education.map((item) =>
-                                  item.id === edu.id ? { ...item, school: e.target.value } : item
+                                  item.school === edu.school ? { ...item, school: e.target.value } : item
                                 )
                               );
                             }}
@@ -429,7 +418,7 @@ const ResumeBuilder = () => {
                             onChange={(e) => {
                               setEducation(
                                 education.map((item) =>
-                                  item.id === edu.id ? { ...item, degree: e.target.value } : item
+                                  item.school === edu.school ? { ...item, degree: e.target.value } : item
                                 )
                               );
                             }}
@@ -446,7 +435,7 @@ const ResumeBuilder = () => {
                             onChange={(e) => {
                               setEducation(
                                 education.map((item) =>
-                                  item.id === edu.id ? { ...item, field: e.target.value } : item
+                                  item.school === edu.school ? { ...item, field: e.target.value } : item
                                 )
                               );
                             }}
@@ -463,7 +452,7 @@ const ResumeBuilder = () => {
                             onChange={(e) => {
                               setEducation(
                                 education.map((item) =>
-                                  item.id === edu.id ? { ...item, gpa: e.target.value } : item
+                                  item.school === edu.school ? { ...item, gpa: e.target.value } : item
                                 )
                               );
                             }}
@@ -480,7 +469,7 @@ const ResumeBuilder = () => {
                             onChange={(e) => {
                               setEducation(
                                 education.map((item) =>
-                                  item.id === edu.id ? { ...item, startDate: e.target.value } : item
+                                  item.school === edu.school ? { ...item, startDate: e.target.value } : item
                                 )
                               );
                             }}
@@ -497,65 +486,12 @@ const ResumeBuilder = () => {
                             onChange={(e) => {
                               setEducation(
                                 education.map((item) =>
-                                  item.id === edu.id ? { ...item, endDate: e.target.value } : item
+                                  item.school === edu.school ? { ...item, endDate: e.target.value } : item
                                 )
                               );
                             }}
                             className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                           />
-                        </div>
-                      </div>
-                      <div className="mt-4">
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                          Achievements & Leadership Roles
-                        </label>
-                        <div className="space-y-2">
-                          {edu.achievements?.map((achievement, index) => (
-                            <div key={index} className="flex gap-2">
-                              <input
-                                type="text"
-                                value={achievement}
-                                onChange={(e) => {
-                                  const newAchievements = [...(edu.achievements || [])];
-                                  newAchievements[index] = e.target.value;
-                                  setEducation(
-                                    education.map((item) =>
-                                      item.id === edu.id ? { ...item, achievements: newAchievements } : item
-                                    )
-                                  );
-                                }}
-                                className="flex-1 rounded-lg border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                              />
-                              <button
-                                onClick={() => {
-                                  const newAchievements = [...(edu.achievements || [])];
-                                  newAchievements.splice(index, 1);
-                                  setEducation(
-                                    education.map((item) =>
-                                      item.id === edu.id ? { ...item, achievements: newAchievements } : item
-                                    )
-                                  );
-                                }}
-                                className="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300"
-                              >
-                                Remove
-                              </button>
-                            </div>
-                          ))}
-                          <button
-                            onClick={() => {
-                              setEducation(
-                                education.map((item) =>
-                                  item.id === edu.id
-                                    ? { ...item, achievements: [...(item.achievements || []), ''] }
-                                    : item
-                                )
-                              );
-                            }}
-                            className="text-emerald-600 hover:text-emerald-800 dark:text-emerald-400 dark:hover:text-emerald-300"
-                          >
-                            + Add Achievement
-                          </button>
                         </div>
                       </div>
                     </div>
@@ -575,14 +511,11 @@ const ResumeBuilder = () => {
                       setExperience([
                         ...experience,
                         {
-                          id: Date.now().toString(),
                           company: '',
                           position: '',
-                          location: '',
                           startDate: '',
                           endDate: '',
-                          current: false,
-                          description: [''],
+                          description: '',
                         },
                       ]);
                     }}
@@ -593,7 +526,7 @@ const ResumeBuilder = () => {
                 </div>
                 <div className="space-y-4">
                   {experience.map((exp) => (
-                    <div key={exp.id} className="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
+                    <div key={exp.company} className="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
@@ -605,7 +538,7 @@ const ResumeBuilder = () => {
                             onChange={(e) => {
                               setExperience(
                                 experience.map((item) =>
-                                  item.id === exp.id ? { ...item, company: e.target.value } : item
+                                  item.company === exp.company ? { ...item, company: e.target.value } : item
                                 )
                               );
                             }}
@@ -622,24 +555,7 @@ const ResumeBuilder = () => {
                             onChange={(e) => {
                               setExperience(
                                 experience.map((item) =>
-                                  item.id === exp.id ? { ...item, position: e.target.value } : item
-                                )
-                              );
-                            }}
-                            className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                          />
-                        </div>
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                            Location
-                          </label>
-                          <input
-                            type="text"
-                            value={exp.location}
-                            onChange={(e) => {
-                              setExperience(
-                                experience.map((item) =>
-                                  item.id === exp.id ? { ...item, location: e.target.value } : item
+                                  item.company === exp.company ? { ...item, position: e.target.value } : item
                                 )
                               );
                             }}
@@ -656,7 +572,7 @@ const ResumeBuilder = () => {
                             onChange={(e) => {
                               setExperience(
                                 experience.map((item) =>
-                                  item.id === exp.id ? { ...item, startDate: e.target.value } : item
+                                  item.company === exp.company ? { ...item, startDate: e.target.value } : item
                                 )
                               );
                             }}
@@ -673,29 +589,12 @@ const ResumeBuilder = () => {
                             onChange={(e) => {
                               setExperience(
                                 experience.map((item) =>
-                                  item.id === exp.id ? { ...item, endDate: e.target.value } : item
+                                  item.company === exp.company ? { ...item, endDate: e.target.value } : item
                                 )
                               );
                             }}
                             className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                           />
-                        </div>
-                        <div className="flex items-center">
-                          <input
-                            type="checkbox"
-                            checked={exp.current}
-                            onChange={(e) => {
-                              setExperience(
-                                experience.map((item) =>
-                                  item.id === exp.id ? { ...item, current: e.target.checked } : item
-                                )
-                              );
-                            }}
-                            className="h-4 w-4 text-emerald-600 focus:ring-emerald-500 border-gray-300 rounded"
-                          />
-                          <label className="ml-2 block text-sm text-gray-700 dark:text-gray-300">
-                            Current Position
-                          </label>
                         </div>
                       </div>
                       <div className="mt-4">
@@ -703,52 +602,18 @@ const ResumeBuilder = () => {
                           Job Responsibilities & Achievements
                         </label>
                         <div className="space-y-2">
-                          {exp.description.map((desc, index) => (
-                            <div key={index} className="flex gap-2">
-                              <input
-                                type="text"
-                                value={desc}
-                                onChange={(e) => {
-                                  const newDescription = [...exp.description];
-                                  newDescription[index] = e.target.value;
-                                  setExperience(
-                                    experience.map((item) =>
-                                      item.id === exp.id ? { ...item, description: newDescription } : item
-                                    )
-                                  );
-                                }}
-                                className="flex-1 rounded-lg border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                              />
-                              <button
-                                onClick={() => {
-                                  const newDescription = [...exp.description];
-                                  newDescription.splice(index, 1);
-                                  setExperience(
-                                    experience.map((item) =>
-                                      item.id === exp.id ? { ...item, description: newDescription } : item
-                                    )
-                                  );
-                                }}
-                                className="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300"
-                              >
-                                Remove
-                              </button>
-                            </div>
-                          ))}
-                          <button
-                            onClick={() => {
+                          <textarea
+                            value={exp.description}
+                            onChange={(e) => {
                               setExperience(
                                 experience.map((item) =>
-                                  item.id === exp.id
-                                    ? { ...item, description: [...item.description, ''] }
-                                    : item
+                                  item.company === exp.company ? { ...item, description: e.target.value } : item
                                 )
                               );
                             }}
-                            className="text-emerald-600 hover:text-emerald-800 dark:text-emerald-400 dark:hover:text-emerald-300"
-                          >
-                            + Add Responsibility
-                          </button>
+                            rows={3}
+                            className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                          />
                         </div>
                       </div>
                     </div>
@@ -1172,17 +1037,16 @@ const ResumeBuilder = () => {
                     Education
                   </h2>
                   {getDisplayData().education.map((edu) => (
-                    <div key={edu.id} className="mb-2">
+                    <div key={edu.school} className="mb-2">
                       <div className="flex justify-between">
                         <div className="font-bold">{edu.school}</div>
-                        <div>{edu.location}</div>
+                        <div>{edu.endDate}</div>
                       </div>
                       <div className="flex justify-between">
                         <div>Focus in {edu.field}</div>
                         <div>{edu.endDate}</div>
                       </div>
                       <div>Cumulative GPA: {edu.gpa}</div>
-                      <div>Activities/Clubs: {edu.achievements?.join('; ')}</div>
                     </div>
                   ))}
                 </div>
@@ -1195,17 +1059,16 @@ const ResumeBuilder = () => {
                     Work Experience
                   </h2>
                   {getDisplayData().experience.map((exp) => (
-                    <div key={exp.id} className="mb-2">
+                    <div key={exp.company} className="mb-2">
                       <div className="flex justify-between">
                         <div className="font-bold">{exp.company}</div>
-                        <div>{exp.location}</div>
+                        <div>{exp.startDate} – {exp.endDate}</div>
                       </div>
                       <div className="flex justify-between">
                         <div>{exp.position}</div>
-                        <div>{exp.startDate} – {exp.current ? 'Present' : exp.endDate}</div>
                       </div>
                       <ul className="list-disc ml-4 mb-0 mt-0">
-                        {exp.description.map((desc, index) => (
+                        {typeof exp.description === 'string' && exp.description.split('\n').map((desc: string, index: number) => (
                           <li key={index} className="mb-0">{desc}</li>
                         ))}
                       </ul>
@@ -1243,13 +1106,13 @@ const ResumeBuilder = () => {
                     Awards
                   </h2>
                   {getDisplayData().activities.map((activity) => (
-                    <div key={activity.id} className="mb-1">
+                    <div key={activity.organization} className="mb-1">
                       <div className="flex justify-between">
                         <div className="font-bold">{activity.organization}</div>
-                        <div>{activity.location}</div>
+                        <div>{activity.startDate} – {activity.endDate}</div>
                       </div>
                       <ul className="list-disc ml-4 mb-0 mt-0">
-                        {activity.description.map((desc, index) => (
+                        {typeof activity.description === 'string' && activity.description.split('\n').map((desc: string, index: number) => (
                           <li key={index} className="mb-0">{desc}</li>
                         ))}
                       </ul>
