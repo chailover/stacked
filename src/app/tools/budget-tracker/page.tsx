@@ -37,10 +37,6 @@ interface Transaction {
   reason?: string;
 }
 
-interface CategoryTotal {
-  [key: string]: number;
-}
-
 const DEFAULT_INCOME_CATEGORIES = [
   'Allowance',
   'Part-time Job',
