@@ -12,7 +12,7 @@ import {
   Legend,
   ArcElement,
 } from 'chart.js';
-import { Bar, BarChart, CartesianGrid, ResponsiveContainer, XAxis, YAxis } from 'recharts';
+
 
 // Register ChartJS components
 ChartJS.register(
@@ -136,7 +136,6 @@ const BudgetTracker = () => {
   };
 
   const { income, expenses, balance } = calculateTotals();
-  const expenseTotals = getCategoryTotals('expense');
 
   const deleteTransaction = (id: string) => {
     setTransactions(transactions.filter(t => t.id !== id));
