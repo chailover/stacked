@@ -63,7 +63,7 @@ export default function GPACalculator() {
     setYears(newYears);
   };
 
-  const getGradePoints = (numericalGrade: string, weight: string): number => {
+  const getGradePoints = (numericalGrade: string, weight: string, isUnweighted: boolean = false): number => {
     const numGrade = parseInt(numericalGrade);
     if (isNaN(numGrade)) return 0;
 
@@ -96,16 +96,17 @@ export default function GPACalculator() {
           { min: 0, max: 64, points: 0.0 }
         ],
         regular: [
-          { min: 98, max: 100, points: 4.0 },
-          { min: 93, max: 97, points: 3.7 },
-          { min: 90, max: 92, points: 3.5 },
-          { min: 87, max: 89, points: 3.3 },
-          { min: 83, max: 86, points: 3.0 },
-          { min: 80, max: 82, points: 2.7 },
-          { min: 77, max: 79, points: 2.4 },
-          { min: 73, max: 76, points: 2.0 },
-          { min: 70, max: 72, points: 1.7 },
-          { min: 65, max: 69, points: 1.0 },
+          { min: 97, max: 100, points: isUnweighted ? 4.0 : 4.0 },
+          { min: 93, max: 96, points: isUnweighted ? 4.0 : 3.7 },
+          { min: 90, max: 92, points: isUnweighted ? 3.7 : 3.5 },
+          { min: 87, max: 89, points: isUnweighted ? 3.3 : 3.3 },
+          { min: 83, max: 86, points: isUnweighted ? 3.0 : 3.0 },
+          { min: 80, max: 82, points: isUnweighted ? 2.7 : 2.7 },
+          { min: 77, max: 79, points: isUnweighted ? 2.3 : 2.4 },
+          { min: 73, max: 76, points: isUnweighted ? 2.0 : 2.0 },
+          { min: 70, max: 72, points: isUnweighted ? 1.7 : 1.7 },
+          { min: 67, max: 69, points: isUnweighted ? 1.3 : 1.0 },
+          { min: 65, max: 66, points: isUnweighted ? 1.0 : 1.0 },
           { min: 0, max: 64, points: 0.0 }
         ]
       };
@@ -125,7 +126,7 @@ export default function GPACalculator() {
       if (grade.numericalGrade && grade.subject) {
         const points = useWeighted 
           ? getGradePoints(grade.numericalGrade, grade.weight)
-          : getGradePoints(grade.numericalGrade, 'regular'); // Always use regular scale for unweighted
+          : getGradePoints(grade.numericalGrade, 'regular', true); // Pass true for isUnweighted
         totalPoints += points;
         totalCredits += 1;
       }
@@ -143,7 +144,7 @@ export default function GPACalculator() {
         if (grade.numericalGrade && grade.subject) {
           const points = useWeighted 
             ? getGradePoints(grade.numericalGrade, grade.weight)
-            : getGradePoints(grade.numericalGrade, 'regular'); // Always use regular scale for unweighted
+            : getGradePoints(grade.numericalGrade, 'regular', true); // Pass true for isUnweighted
           totalPoints += points;
           totalCredits += 1;
         }
@@ -358,24 +359,25 @@ export default function GPACalculator() {
                       College Prep Classes
                     </h3>
                     <div className="mt-2 grid grid-cols-3 gap-2 text-sm">
-                      <div className="text-gray-600 dark:text-gray-400">98-100: 4.0</div>
-                      <div className="text-gray-600 dark:text-gray-400">93-97: 3.7</div>
-                      <div className="text-gray-600 dark:text-gray-400">90-92: 3.5</div>
+                      <div className="text-gray-600 dark:text-gray-400">97-100: 4.0</div>
+                      <div className="text-gray-600 dark:text-gray-400">93-96: 4.0</div>
+                      <div className="text-gray-600 dark:text-gray-400">90-92: 3.7</div>
                       <div className="text-gray-600 dark:text-gray-400">87-89: 3.3</div>
                       <div className="text-gray-600 dark:text-gray-400">83-86: 3.0</div>
                       <div className="text-gray-600 dark:text-gray-400">80-82: 2.7</div>
-                      <div className="text-gray-600 dark:text-gray-400">77-79: 2.4</div>
+                      <div className="text-gray-600 dark:text-gray-400">77-79: 2.3</div>
                       <div className="text-gray-600 dark:text-gray-400">73-76: 2.0</div>
                       <div className="text-gray-600 dark:text-gray-400">70-72: 1.7</div>
-                      <div className="text-gray-600 dark:text-gray-400">65-69: 1.0</div>
-                      <div className="text-gray-600 dark:text-gray-400">0-64: 0.0</div>
+                      <div className="text-gray-600 dark:text-gray-400">67-69: 1.3</div>
+                      <div className="text-gray-600 dark:text-gray-400">65-66: 1.0</div>
+                      <div className="text-gray-600 dark:text-gray-400">Below 65: 0.0</div>
                     </div>
                   </div>
                 </div>
 
                 <div className="mt-6 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
                   <p className="text-sm text-gray-600 dark:text-gray-300">
-                    <span className="font-semibold">Note:</span> The unweighted GPA uses the College Prep scale for all classes regardless of level.
+                    <span className="font-semibold">Note:</span> The unweighted GPA follows the standard 4.0 scale with plus/minus grades, while weighted GPA includes additional points for Honors and AP classes.
                   </p>
                 </div>
               </div>
