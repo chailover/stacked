@@ -195,8 +195,8 @@ const ResumeBuilder = () => {
   const [education, setEducation] = useState<Education[]>([]);
   const [experience, setExperience] = useState<Experience[]>([]);
   const [projects, setProjects] = useState<Project[]>([]);
+  const [skills, setSkills] = useState<string[]>([]);
   const [activities, setActivities] = useState<Activity[]>([]);
-  const [skills, setSkills] = useState<Skill[]>([]);
 
   const [sections, setSections] = useState<{
     education: boolean;
@@ -960,88 +960,39 @@ const ResumeBuilder = () => {
                     onClick={() => {
                       setSkills([
                         ...skills,
-                        {
-                          id: Date.now().toString(),
-                          category: '',
-                          items: [''],
-                        },
+                        '',
                       ]);
                     }}
                     className="bg-emerald-600 text-white px-4 py-2 rounded-lg hover:bg-emerald-700 transition-colors duration-200"
                   >
-                    Add Skill Category
+                    Add Skill
                   </button>
                 </div>
                 <div className="space-y-4">
-                  {skills.map((skill) => (
-                    <div key={skill.id} className="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
-                      <div className="mb-4">
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                          Category
-                        </label>
+                  {skills.map((skill, index) => (
+                    <div key={index} className="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
+                      <div className="space-y-2">
                         <input
                           type="text"
-                          value={skill.category}
+                          value={skill}
                           onChange={(e) => {
-                            setSkills(
-                              skills.map((item) =>
-                                item.id === skill.id ? { ...item, category: e.target.value } : item
-                              )
-                            );
+                            const newSkills = [...skills];
+                            newSkills[index] = e.target.value;
+                            setSkills(newSkills);
                           }}
-                          className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                          className="flex-1 rounded-lg border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                          placeholder="Enter skill"
                         />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                          Skills
-                        </label>
-                        <div className="space-y-2">
-                          {skill.items.map((item, index) => (
-                            <div key={index} className="flex gap-2">
-                              <input
-                                type="text"
-                                value={item}
-                                onChange={(e) => {
-                                  const newItems = [...skill.items];
-                                  newItems[index] = e.target.value;
-                                  setSkills(
-                                    skills.map((s) =>
-                                      s.id === skill.id ? { ...s, items: newItems } : s
-                                    )
-                                  );
-                                }}
-                                className="flex-1 rounded-lg border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                              />
-                              <button
-                                onClick={() => {
-                                  const newItems = [...skill.items];
-                                  newItems.splice(index, 1);
-                                  setSkills(
-                                    skills.map((s) =>
-                                      s.id === skill.id ? { ...s, items: newItems } : s
-                                    )
-                                  );
-                                }}
-                                className="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300"
-                              >
-                                Remove
-                              </button>
-                            </div>
-                          ))}
-                          <button
-                            onClick={() => {
-                              setSkills(
-                                skills.map((s) =>
-                                  s.id === skill.id ? { ...s, items: [...s.items, ''] } : s
-                                )
-                              );
-                            }}
-                            className="text-emerald-600 hover:text-emerald-800 dark:text-emerald-400 dark:hover:text-emerald-300"
-                          >
-                            + Add Skill
-                          </button>
-                        </div>
+                        <button
+                          onClick={() => {
+                            const newSkills = [...skills];
+                            newSkills.splice(index, 1);
+                            setSkills(newSkills);
+                          }}
+                          className="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300"
+                        >
+                          Remove
+                        </button>
                       </div>
                     </div>
                   ))}
@@ -1313,10 +1264,9 @@ const ResumeBuilder = () => {
                   <h2 className="text-xs uppercase border-b border-gray-400 mb-1 font-bold">
                     Additional
                   </h2>
-                  {getDisplayData().skills.map((skill) => (
-                    <div key={skill.id} className="mb-1">
-                      <span className="font-bold">{skill.category}: </span>
-                      {skill.items.join('; ')}
+                  {getDisplayData().skills.map((skill, index) => (
+                    <div key={index} className="mb-1">
+                      <span className="font-bold">{typeof skill === 'string' ? skill : skill.category}: </span>
                     </div>
                   ))}
                 </div>

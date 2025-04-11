@@ -65,6 +65,10 @@ export default function CountdownTimer() {
     avoidWeekends: true,
   });
   const [showQuestionnaire, setShowQuestionnaire] = useState(false);
+  const [currentStep, setCurrentStep] = useState(0);
+  const [studyTime, setStudyTime] = useState('');
+  const [preparationTime, setPreparationTime] = useState('');
+  const currentDate = new Date();
 
   // Load timers from localStorage on initial render
   useEffect(() => {

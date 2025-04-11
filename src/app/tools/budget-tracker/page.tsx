@@ -12,7 +12,7 @@ import {
   Legend,
   ArcElement,
 } from 'chart.js';
-import { Line } from 'react-chartjs-2';
+import { Bar, BarChart, CartesianGrid, ResponsiveContainer, XAxis, YAxis } from 'recharts';
 
 // Register ChartJS components
 ChartJS.register(
@@ -74,6 +74,15 @@ const BudgetTracker = () => {
   });
   const [timeframe, setTimeframe] = useState<'week' | 'month' | 'semester'>('month');
   const [editingTransaction, setEditingTransaction] = useState<Transaction | null>(null);
+  const [expenseList, setExpenseList] = useState<Transaction[]>([]);
+  const [newExpense, setNewExpense] = useState<Transaction>({
+    id: '',
+    description: '',
+    amount: 0,
+    category: '',
+    date: new Date().toISOString().split('T')[0],
+    type: 'expense',
+  });
 
   const addTransaction = () => {
     if (!newTransaction.description || !newTransaction.amount || !newTransaction.category) {
