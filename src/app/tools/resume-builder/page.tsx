@@ -209,19 +209,34 @@ const ResumeBuilder = () => {
         throw new Error('Resume preview element not found');
       }
 
-      // Create canvas with higher resolution
+      // Force a re-render of the content
+      const displayData = getDisplayData();
+      
+      // Create canvas with higher resolution and wait for fonts to load
       const canvas = await html2canvas(resumeElement, {
         scale: 2,
         useCORS: true,
         logging: false,
         backgroundColor: '#ffffff',
         onclone: (clonedDoc) => {
+          // Ensure all fonts are loaded
           const style = document.createElement('style');
           style.textContent = `
             @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600&display=swap');
+            * { -webkit-print-color-adjust: exact !important; }
           `;
           clonedDoc.head.appendChild(style);
-        }
+
+          // Ensure all content is visible
+          const preview = clonedDoc.getElementById('resume-preview');
+          if (preview) {
+            preview.style.overflow = 'visible';
+            preview.style.height = 'auto';
+            preview.style.maxHeight = 'none';
+          }
+        },
+        allowTaint: true,
+        foreignObjectRendering: true
       });
 
       // Configure PDF
@@ -231,14 +246,17 @@ const ResumeBuilder = () => {
         format: [8.5, 11]
       });
 
+      // Calculate dimensions to maintain aspect ratio
       const imgWidth = 7.5;
       const imgHeight = (canvas.height * imgWidth) / canvas.width;
       const xOffset = (8.5 - imgWidth) / 2;
       const yOffset = 0.5;
 
-      pdf.addImage(canvas.toDataURL('image/png'), 'PNG', xOffset, yOffset, imgWidth, imgHeight);
+      // Add the image to PDF with better quality
+      pdf.addImage(canvas.toDataURL('image/png', 1.0), 'PNG', xOffset, yOffset, imgWidth, imgHeight);
       
-      const filename = `${personalInfo.firstName || 'resume'}_resume.pdf`;
+      // Save the PDF with proper filename
+      const filename = `${displayData.personalInfo.firstName || 'resume'}_resume.pdf`;
       pdf.save(filename);
       showToast('Resume exported successfully!', 'success');
     } catch (error) {
@@ -1050,7 +1068,7 @@ const ResumeBuilder = () => {
                           )
                         );
                       }}
-                      className="bg-emerald-600 text-white px-6 py-2.5 rounded-lg hover:bg-emerald-700 transition-colors duration-200"
+                      className="bg-emerald-600 text-white px-6 py-2.5 rounded-lg hover:bg-emerald-700 transition-colors duration-200 ml-4"
                     >
                       Add Item
                     </button>
@@ -1230,7 +1248,9 @@ const ResumeBuilder = () => {
                 padding: '0.5in',
                 boxSizing: 'border-box',
                 overflowY: 'auto',
-                color: '#000000'
+                color: '#000000',
+                WebkitPrintColorAdjust: 'exact',
+                printColorAdjust: 'exact'
               }}>
               {/* Header */}
               <div className="text-center mb-4">
