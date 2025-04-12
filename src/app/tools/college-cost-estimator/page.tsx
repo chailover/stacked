@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useLocalStorage } from '@/utils/useLocalStorage';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -43,7 +44,7 @@ const DEFAULT_CATEGORIES = [
 ];
 
 export default function CollegeCostEstimator() {
-  const [categories, setCategories] = useState<CostCategory[]>(
+  const [categories, setCategories] = useLocalStorage<CostCategory[]>('college-cost-categories', 
     DEFAULT_CATEGORIES.map(cat => ({
       id: Date.now().toString() + Math.random(),
       name: cat.name,

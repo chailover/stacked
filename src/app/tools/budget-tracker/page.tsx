@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useLocalStorage } from '@/utils/useLocalStorage';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -56,11 +57,11 @@ const DEFAULT_EXPENSE_CATEGORIES = [
 ];
 
 const BudgetTracker = () => {
-  const [transactions, setTransactions] = useState<Transaction[]>([]);
-  const [customCategories] = useState<{
+  const [transactions, setTransactions] = useLocalStorage<Transaction[]>('budget-transactions', []);
+  const [customCategories, setCustomCategories] = useLocalStorage<{
     income: string[];
     expense: string[];
-  }>({
+  }>('budget-custom-categories', {
     income: [],
     expense: [],
   });

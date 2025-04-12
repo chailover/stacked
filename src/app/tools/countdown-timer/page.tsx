@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
+import { useLocalStorage } from '@/utils/useLocalStorage';
 
 interface Timer {
   id: string;
@@ -45,39 +46,26 @@ interface StudyQuestionnaire {
 }
 
 export default function CountdownTimer() {
-  const [timers, setTimers] = useState<Timer[]>([]);
-  const [newTimer, setNewTimer] = useState<Partial<Timer>>({
+  const [timers, setTimers] = useLocalStorage<Timer[]>('countdown-timers', []);
+  const [newTimer, setNewTimer] = useLocalStorage<Partial<Timer>>('countdown-new-timer', {
     name: '',
     targetDate: '',
     type: 'other',
   });
-  const [timeInput, setTimeInput] = useState<TimeInput>({
+  const [timeInput, setTimeInput] = useLocalStorage<TimeInput>('countdown-time-input', {
     date: '',
     hour: '12',
     minute: '00',
     ampm: 'AM',
   });
-  const [selectedTimer, setSelectedTimer] = useState<Timer | null>(null);
-  const [studyQuestionnaire, setStudyQuestionnaire] = useState<StudyQuestionnaire>({
+  const [selectedTimer, setSelectedTimer] = useLocalStorage<Timer | null>('countdown-selected-timer', null);
+  const [studyQuestionnaire, setStudyQuestionnaire] = useLocalStorage<StudyQuestionnaire>('countdown-study-questionnaire', {
     totalHours: 0,
     frequency: 'daily',
     preferredTime: 'morning',
     avoidWeekends: true,
   });
-  const [showQuestionnaire, setShowQuestionnaire] = useState(false);
-
-  // Load timers from localStorage on initial render
-  useEffect(() => {
-    const savedTimers = localStorage.getItem('timers');
-    if (savedTimers) {
-      setTimers(JSON.parse(savedTimers));
-    }
-  }, []);
-
-  // Save timers to localStorage whenever they change
-  useEffect(() => {
-    localStorage.setItem('timers', JSON.stringify(timers));
-  }, [timers]);
+  const [showQuestionnaire, setShowQuestionnaire] = useLocalStorage<boolean>('countdown-show-questionnaire', false);
 
   const addTimer = () => {
     if (!newTimer.name || !timeInput.date) {

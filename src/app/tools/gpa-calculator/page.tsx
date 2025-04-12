@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useLocalStorage } from '@/utils/useLocalStorage';
 
 interface Grade {
   subject: string;
@@ -16,7 +17,7 @@ interface Year {
 const YEAR_NAMES = ['Freshman Year', 'Sophomore Year', 'Junior Year', 'Senior Year'];
 
 export default function GPACalculator() {
-  const [years, setYears] = useState<Year[]>([
+  const [years, setYears] = useLocalStorage<Year[]>('gpa-years', [
     { name: YEAR_NAMES[0], grades: [{ subject: '', numericalGrade: '', weight: 'regular' }] },
   ]);
 

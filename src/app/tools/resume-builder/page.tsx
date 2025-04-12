@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
+import { useLocalStorage } from '@/utils/useLocalStorage';
 
 interface PersonalInfo {
   firstName: string;
@@ -120,7 +121,7 @@ const inputClassName = "mt-1 block w-full rounded-lg border-gray-300 shadow-sm f
 const textareaClassName = "mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white px-4 py-3";
 
 const ResumeBuilder = () => {
-  const [personalInfo, setPersonalInfo] = useState<PersonalInfo>({
+  const [personalInfo, setPersonalInfo] = useLocalStorage<PersonalInfo>('resume-personal-info', {
     firstName: '',
     lastName: '',
     email: '',
@@ -128,19 +129,19 @@ const ResumeBuilder = () => {
     location: '',
   });
 
-  const [education, setEducation] = useState<Education[]>([]);
-  const [experience, setExperience] = useState<Experience[]>([]);
-  const [projects, setProjects] = useState<Project[]>([]);
-  const [skills, setSkills] = useState<string[]>([]);
-  const [activities, setActivities] = useState<Activity[]>([]);
+  const [education, setEducation] = useLocalStorage<Education[]>('resume-education', []);
+  const [experience, setExperience] = useLocalStorage<Experience[]>('resume-experience', []);
+  const [projects, setProjects] = useLocalStorage<Project[]>('resume-projects', []);
+  const [skills, setSkills] = useLocalStorage<string[]>('resume-skills', []);
+  const [activities, setActivities] = useLocalStorage<Activity[]>('resume-activities', []);
 
-  const [sections, setSections] = useState<{
+  const [sections, setSections] = useLocalStorage<{
     education: boolean;
     experience: boolean;
     projects: boolean;
     skills: boolean;
     activities: boolean;
-  }>({
+  }>('resume-sections', {
     education: true,
     experience: true,
     projects: true,
@@ -148,8 +149,8 @@ const ResumeBuilder = () => {
     activities: true,
   });
 
-  const [customSections, setCustomSections] = useState<CustomSection[]>([]);
-  const [sectionOrder, setSectionOrder] = useState<string[]>([
+  const [customSections, setCustomSections] = useLocalStorage<CustomSection[]>('resume-custom-sections', []);
+  const [sectionOrder, setSectionOrder] = useLocalStorage<string[]>('resume-section-order', [
     'education',
     'experience',
     'projects',
