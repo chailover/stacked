@@ -178,14 +178,14 @@ export default function GPACalculator() {
             <div className="space-y-8">
               {years.map((year, yearIndex) => (
                 <div key={yearIndex} className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300">
-                  <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center justify-between mb-4 gap-4">
                     <input
                       type="text"
                       value={year.name}
                       onChange={(e) => updateYearName(yearIndex, e.target.value)}
-                      className="text-xl font-semibold bg-transparent border-b border-gray-300 dark:border-gray-600 focus:border-indigo-500 focus:outline-none"
+                      className="text-xl font-semibold bg-transparent border-b border-gray-300 dark:border-gray-600 focus:border-indigo-500 focus:outline-none min-w-0 max-w-[200px]"
                     />
-                    <div className="flex gap-2">
+                    <div className="flex gap-2 flex-shrink-0">
                       <button
                         onClick={() => addGrade(yearIndex)}
                         className="inline-flex items-center px-3 py-1 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 transition-colors duration-200"
@@ -211,19 +211,19 @@ export default function GPACalculator() {
                           value={grade.subject}
                           onChange={(e) => updateGrade(yearIndex, gradeIndex, 'subject', e.target.value)}
                           placeholder="Subject"
-                          className="flex-1 rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                          className="w-[250px] rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                         />
                         <input
                           type="text"
                           value={grade.numericalGrade}
                           onChange={(e) => updateGrade(yearIndex, gradeIndex, 'numericalGrade', e.target.value)}
                           placeholder="Grade"
-                          className="w-20 rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                          className="w-24 rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                         />
                         <select
                           value={grade.weight}
                           onChange={(e) => updateGrade(yearIndex, gradeIndex, 'weight', e.target.value as 'regular' | 'honors' | 'ap')}
-                          className="rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                          className="w-32 rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                         >
                           <option value="regular">College Prep</option>
                           <option value="honors">Honors</option>
@@ -232,7 +232,7 @@ export default function GPACalculator() {
                         {year.grades.length > 1 && (
                           <button
                             onClick={() => removeGrade(yearIndex, gradeIndex)}
-                            className="text-red-600 hover:text-red-800 transition-colors duration-200"
+                            className="flex-shrink-0 text-red-600 hover:text-red-800 transition-colors duration-200"
                           >
                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />

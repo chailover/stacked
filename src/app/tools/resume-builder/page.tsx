@@ -209,54 +209,88 @@ const ResumeBuilder = () => {
         throw new Error('Resume preview element not found');
       }
 
-      // Force a re-render of the content
-      const displayData = getDisplayData();
+      // Create a clone of the resume element with absolute positioning
+      const clone = resumeElement.cloneNode(true) as HTMLElement;
+      clone.style.position = 'absolute';
+      clone.style.top = '0';
+      clone.style.left = '0';
+      clone.style.width = '8.5in';
+      clone.style.height = 'auto';
+      clone.style.minHeight = '11in';
+      clone.style.backgroundColor = '#ffffff';
+      clone.style.padding = '0.5in';
+      clone.style.margin = '0';
+      clone.style.overflow = 'visible';
+      clone.style.boxSizing = 'border-box';
       
-      // Create canvas with higher resolution and wait for fonts to load
-      const canvas = await html2canvas(resumeElement, {
-        scale: 2,
+      // Temporarily append clone to body
+      document.body.appendChild(clone);
+      
+      // Wait for fonts to load
+      await document.fonts.ready;
+      
+      // Create canvas with higher resolution
+      const canvas = await html2canvas(clone, {
+        scale: 3,
         useCORS: true,
-        logging: false,
+        logging: true,
         backgroundColor: '#ffffff',
+        windowWidth: clone.scrollWidth,
+        windowHeight: clone.scrollHeight,
         onclone: (clonedDoc) => {
-          // Ensure all fonts are loaded
-          const style = document.createElement('style');
+          const style = clonedDoc.createElement('style');
           style.textContent = `
             @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600&display=swap');
-            * { -webkit-print-color-adjust: exact !important; }
+            * { 
+              -webkit-print-color-adjust: exact !important;
+              print-color-adjust: exact !important;
+            }
+            #resume-preview {
+              background-color: white !important;
+              color: black !important;
+            }
+            #resume-preview * {
+              background-color: transparent !important;
+              color: black !important;
+            }
           `;
           clonedDoc.head.appendChild(style);
-
-          // Ensure all content is visible
-          const preview = clonedDoc.getElementById('resume-preview');
-          if (preview) {
-            preview.style.overflow = 'visible';
-            preview.style.height = 'auto';
-            preview.style.maxHeight = 'none';
-          }
         },
         allowTaint: true,
-        foreignObjectRendering: true
+        foreignObjectRendering: true,
+        imageTimeout: 0,
+        removeContainer: true
       });
 
-      // Configure PDF
+      // Remove the clone after canvas creation
+      document.body.removeChild(clone);
+
+      // Configure PDF with precise dimensions
       const pdf = new jsPDF({
         orientation: 'portrait',
         unit: 'in',
-        format: [8.5, 11]
+        format: [8.5, 11],
+        compress: true,
+        hotfixes: ['px_scaling']
       });
 
-      // Calculate dimensions to maintain aspect ratio
-      const imgWidth = 7.5;
+      // Calculate dimensions with precise margins
+      const imgWidth = 8.5;
       const imgHeight = (canvas.height * imgWidth) / canvas.width;
-      const xOffset = (8.5 - imgWidth) / 2;
-      const yOffset = 0.5;
 
-      // Add the image to PDF with better quality
-      pdf.addImage(canvas.toDataURL('image/png', 1.0), 'PNG', xOffset, yOffset, imgWidth, imgHeight);
-      
-      // Save the PDF with proper filename
-      const filename = `${displayData.personalInfo.firstName || 'resume'}_resume.pdf`;
+      // Add the image with maximum quality
+      pdf.addImage(
+        canvas.toDataURL('image/png', 1.0),
+        'PNG',
+        0,
+        0,
+        imgWidth,
+        imgHeight,
+        undefined,
+        'FAST'
+      );
+
+      const filename = `${getDisplayData().personalInfo.firstName || 'resume'}_resume.pdf`;
       pdf.save(filename);
       showToast('Resume exported successfully!', 'success');
     } catch (error) {
@@ -278,16 +312,16 @@ const ResumeBuilder = () => {
         </div>
       )}
 
-      {/* Hero Section */}
-      <div className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-emerald-500 to-emerald-600 opacity-10"></div>
+      {/* Header */}
+      <div className="relative">
+        <div className="absolute inset-0 bg-gradient-to-r from-amber-500 to-amber-600 opacity-10 rounded-t-3xl"></div>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="text-center">
             <h1 className="text-4xl font-extrabold text-gray-900 dark:text-white sm:text-5xl">
               Resume Builder
             </h1>
-            <p className="mt-4 text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-              Create a professional resume that highlights your skills and experience
+            <p className="mt-6 text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+              Create a professional resume that stands out to employers.
             </p>
           </div>
         </div>
@@ -1236,9 +1270,9 @@ const ResumeBuilder = () => {
               id="resume-preview"
               className="bg-white shadow-lg mx-auto" 
               style={{ 
-                maxWidth: '8.5in', 
+                width: '8.5in',
                 minHeight: '11in',
-                maxHeight: '11in',
+                height: 'auto',
                 fontFamily: '"EB Garamond", serif',
                 fontSize: '11px',
                 lineHeight: '1.15',
@@ -1247,8 +1281,9 @@ const ResumeBuilder = () => {
                 pageBreakInside: 'avoid',
                 padding: '0.5in',
                 boxSizing: 'border-box',
-                overflowY: 'auto',
+                overflowY: 'visible',
                 color: '#000000',
+                backgroundColor: '#ffffff',
                 WebkitPrintColorAdjust: 'exact',
                 printColorAdjust: 'exact'
               }}>

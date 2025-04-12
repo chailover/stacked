@@ -321,16 +321,16 @@ export default function CountdownTimer() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800">
-      {/* Hero Section */}
-      <div className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-emerald-500 to-emerald-600 opacity-10"></div>
+      {/* Header */}
+      <div className="relative">
+        <div className="absolute inset-0 bg-gradient-to-r from-rose-500 to-rose-600 opacity-10 rounded-t-3xl"></div>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="text-center">
             <h1 className="text-4xl font-extrabold text-gray-900 dark:text-white sm:text-5xl">
               Countdown Timer
             </h1>
-            <p className="mt-4 text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-              Track important dates and prepare for your upcoming events
+            <p className="mt-6 text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+              Track important dates and deadlines with our customizable countdown timer.
             </p>
           </div>
         </div>
@@ -443,43 +443,43 @@ export default function CountdownTimer() {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Date</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Date</label>
               <input
                 type="date"
                 value={timeInput.date}
                 onChange={(e) => handleTimeChange('date', e.target.value)}
-                className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white px-4 py-3"
               />
             </div>
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-3 gap-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Hour</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Hour</label>
                 <input
                   type="number"
                   min="1"
                   max="12"
                   value={timeInput.hour}
                   onChange={(e) => handleTimeChange('hour', e.target.value)}
-                  className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                  className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white px-4 py-3"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Minute</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Minute</label>
                 <input
                   type="number"
                   min="0"
                   max="59"
                   value={timeInput.minute}
                   onChange={(e) => handleTimeChange('minute', e.target.value)}
-                  className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                  className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white px-4 py-3"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">AM/PM</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">AM/PM</label>
                 <select
                   value={timeInput.ampm}
                   onChange={(e) => handleTimeChange('ampm', e.target.value)}
-                  className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                  className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white px-4 py-3"
                 >
                   <option value="AM">AM</option>
                   <option value="PM">PM</option>
@@ -540,8 +540,8 @@ export default function CountdownTimer() {
         {/* Study Schedule Questionnaire Modal */}
         {showQuestionnaire && selectedTimer && (
           <div className="fixed inset-0 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-            <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 max-w-2xl w-full shadow-xl relative z-50">
-              <div className="flex justify-between items-center mb-4">
+            <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 max-w-2xl w-full shadow-xl relative z-50">
+              <div className="flex justify-between items-center mb-6">
                 <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
                   Study Schedule Questionnaire
                 </h2>
@@ -562,9 +562,9 @@ export default function CountdownTimer() {
                   </svg>
                 </button>
               </div>
-              <div className="space-y-4 max-h-[70vh] overflow-y-auto pr-2">
+              <div className="space-y-6 max-h-[70vh] overflow-y-auto px-2">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     Total Study Hours Needed
                   </label>
                   <input
@@ -575,12 +575,12 @@ export default function CountdownTimer() {
                       ...studyQuestionnaire,
                       totalHours: parseInt(e.target.value)
                     })}
-                    className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                    className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white px-4 py-3"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     Study Frequency
                   </label>
                   <select
@@ -589,7 +589,7 @@ export default function CountdownTimer() {
                       ...studyQuestionnaire,
                       frequency: e.target.value as StudyQuestionnaire['frequency']
                     })}
-                    className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                    className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white px-4 py-3 pr-10"
                   >
                     <option value="daily">Daily</option>
                     <option value="every_other_day">Every Other Day</option>
@@ -598,7 +598,7 @@ export default function CountdownTimer() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     Preferred Study Time
                   </label>
                   <select
@@ -607,7 +607,7 @@ export default function CountdownTimer() {
                       ...studyQuestionnaire,
                       preferredTime: e.target.value as StudyQuestionnaire['preferredTime']
                     })}
-                    className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                    className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white px-4 py-3 pr-10"
                   >
                     <option value="morning">Morning (9 AM - 12 PM)</option>
                     <option value="afternoon">Afternoon (1 PM - 5 PM)</option>
@@ -616,7 +616,7 @@ export default function CountdownTimer() {
                 </div>
 
                 <div>
-                  <label className="flex items-center space-x-2">
+                  <label className="flex items-center space-x-3">
                     <input
                       type="checkbox"
                       checked={studyQuestionnaire.avoidWeekends}
@@ -632,7 +632,7 @@ export default function CountdownTimer() {
                   </label>
                 </div>
 
-                <div className="flex justify-end space-x-4 pt-4">
+                <div className="flex justify-end space-x-4 pt-6">
                   <button
                     onClick={() => {
                       setShowQuestionnaire(false);

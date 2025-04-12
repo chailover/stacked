@@ -12,6 +12,7 @@ import {
   Legend,
   ArcElement,
 } from 'chart.js';
+import { Pie } from 'react-chartjs-2';
 
 
 // Register ChartJS components
@@ -122,7 +123,41 @@ const BudgetTracker = () => {
     return { income, expenses, balance: income - expenses };
   };
 
+  const calculateExpenseBreakdown = () => {
+    const timeframeTransactions = getTimeframeTransactions();
+    const expensesByCategory = timeframeTransactions
+      .filter(t => t.type === 'expense')
+      .reduce((acc, t) => {
+        acc[t.category] = (acc[t.category] || 0) + t.amount;
+        return acc;
+      }, {} as Record<string, number>);
 
+    return {
+      labels: Object.keys(expensesByCategory),
+      datasets: [
+        {
+          data: Object.values(expensesByCategory),
+          backgroundColor: [
+            'rgba(52, 211, 153, 0.8)', // emerald
+            'rgba(59, 130, 246, 0.8)', // blue
+            'rgba(139, 92, 246, 0.8)', // purple
+            'rgba(251, 146, 60, 0.8)', // orange
+            'rgba(236, 72, 153, 0.8)', // pink
+            'rgba(248, 113, 113, 0.8)', // red
+          ],
+          borderColor: [
+            'rgba(52, 211, 153, 1)',
+            'rgba(59, 130, 246, 1)',
+            'rgba(139, 92, 246, 1)',
+            'rgba(251, 146, 60, 1)',
+            'rgba(236, 72, 153, 1)',
+            'rgba(248, 113, 113, 1)',
+          ],
+          borderWidth: 1,
+        },
+      ],
+    };
+  };
 
   const { income, expenses, balance } = calculateTotals();
 
@@ -319,7 +354,23 @@ const BudgetTracker = () => {
           <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 p-6">
             <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Expense Breakdown</h2>
             <div className="h-80">
-              {/* Remove the Pie chart */}
+              <Pie
+                data={calculateExpenseBreakdown()}
+                options={{
+                  maintainAspectRatio: false,
+                  plugins: {
+                    legend: {
+                      position: 'right' as const,
+                      labels: {
+                        color: 'rgb(107, 114, 128)',
+                        font: {
+                          size: 12
+                        }
+                      }
+                    }
+                  }
+                }}
+              />
             </div>
           </div>
         </div>
