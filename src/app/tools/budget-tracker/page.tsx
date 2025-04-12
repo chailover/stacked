@@ -58,7 +58,7 @@ const DEFAULT_EXPENSE_CATEGORIES = [
 
 const BudgetTracker = () => {
   const [transactions, setTransactions] = useLocalStorage<Transaction[]>('budget-transactions', []);
-  const [customCategories, setCustomCategories] = useLocalStorage<{
+  const [customCategories] = useLocalStorage<{
     income: string[];
     expense: string[];
   }>('budget-custom-categories', {

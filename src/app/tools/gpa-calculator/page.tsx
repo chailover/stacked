@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import { useLocalStorage } from '@/utils/useLocalStorage';
 
 interface Grade {
