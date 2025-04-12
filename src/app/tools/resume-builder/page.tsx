@@ -1,6 +1,8 @@
 'use client';
 
 import { useState } from 'react';
+import html2canvas from 'html2canvas';
+import { jsPDF } from 'jspdf';
 
 interface PersonalInfo {
   firstName: string;
@@ -155,6 +157,9 @@ const ResumeBuilder = () => {
     'skills',
   ]);
 
+  const [isExporting, setIsExporting] = useState(false);
+  const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
+
   const addCustomSection = () => {
     const newSection: CustomSection = {
       id: Date.now().toString(),
@@ -189,8 +194,72 @@ const ResumeBuilder = () => {
     };
   };
 
+  const showToast = (message: string, type: 'success' | 'error') => {
+    setToast({ message, type });
+    setTimeout(() => setToast(null), 3000);
+  };
+
+  const exportToPDF = async () => {
+    if (isExporting) return;
+    setIsExporting(true);
+
+    try {
+      const resumeElement = document.getElementById('resume-preview');
+      if (!resumeElement) {
+        throw new Error('Resume preview element not found');
+      }
+
+      // Create canvas with higher resolution
+      const canvas = await html2canvas(resumeElement, {
+        scale: 2,
+        useCORS: true,
+        logging: false,
+        backgroundColor: '#ffffff',
+        onclone: (clonedDoc) => {
+          const style = document.createElement('style');
+          style.textContent = `
+            @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600&display=swap');
+          `;
+          clonedDoc.head.appendChild(style);
+        }
+      });
+
+      // Configure PDF
+      const pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: 'in',
+        format: [8.5, 11]
+      });
+
+      const imgWidth = 7.5;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      const xOffset = (8.5 - imgWidth) / 2;
+      const yOffset = 0.5;
+
+      pdf.addImage(canvas.toDataURL('image/png'), 'PNG', xOffset, yOffset, imgWidth, imgHeight);
+      
+      const filename = `${personalInfo.firstName || 'resume'}_resume.pdf`;
+      pdf.save(filename);
+      showToast('Resume exported successfully!', 'success');
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+      showToast('Failed to export resume. Please try again.', 'error');
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800">
+      {/* Toast Notification */}
+      {toast && (
+        <div className={`fixed top-4 right-4 px-4 py-2 rounded-lg shadow-lg text-white ${
+          toast.type === 'success' ? 'bg-emerald-600' : 'bg-red-600'
+        }`}>
+          {toast.message}
+        </div>
+      )}
+
       {/* Hero Section */}
       <div className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-emerald-500 to-emerald-600 opacity-10"></div>
@@ -1128,10 +1197,25 @@ const ResumeBuilder = () => {
         {/* Preview Section */}
         <div className="mt-12">
           <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 p-6">
-            <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
-              Resume Preview
-            </h2>
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+                Resume Preview
+              </h2>
+              <button
+                onClick={exportToPDF}
+                disabled={isExporting}
+                className={`px-6 py-2.5 rounded-lg text-white transition-all duration-200 ${
+                  isExporting 
+                    ? 'bg-gray-400 cursor-not-allowed'
+                    : 'bg-emerald-600 hover:bg-emerald-700'
+                }`}
+                title={isExporting ? "Exporting resume..." : "Export resume as PDF"}
+              >
+                {isExporting ? 'Exporting...' : 'Export PDF'}
+              </button>
+            </div>
             <div 
+              id="resume-preview"
               className="bg-white shadow-lg mx-auto" 
               style={{ 
                 maxWidth: '8.5in', 
