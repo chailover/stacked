@@ -1,5 +1,5 @@
-import { initializeApp, getApps } from 'firebase/app';
-import { getAuth } from 'firebase/auth';
+import { initializeApp, getApps, FirebaseApp } from 'firebase/app';
+import { getAuth, Auth, User } from 'firebase/auth';
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -11,19 +11,29 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase only if we have the required config
-let app;
-let auth;
+let app: FirebaseApp | undefined;
+let auth: Auth;
 
 if (typeof window !== 'undefined' && firebaseConfig.apiKey) {
   app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
   auth = getAuth(app);
 } else {
   // Mock auth for static generation
-  auth = {
-    onAuthStateChanged: () => () => {},
+  interface MockAuth {
+    onAuthStateChanged: (callback: (user: User | null) => void) => () => void;
+    signInWithPopup: () => Promise<never>;
+    signOut: () => Promise<void>;
+  }
+
+  const mockAuth: MockAuth = {
+    onAuthStateChanged: (callback: (user: User | null) => void) => {
+      callback(null);
+      return () => {};
+    },
     signInWithPopup: () => Promise.reject(new Error('Firebase not initialized')),
     signOut: () => Promise.reject(new Error('Firebase not initialized')),
-  } as any;
+  };
+  auth = mockAuth as unknown as Auth;
 }
 
 export { app, auth }; 
