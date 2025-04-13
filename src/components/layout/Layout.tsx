@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import LoginButton from '@/components/LoginButton';
 
 interface LayoutProps {
@@ -9,6 +10,16 @@ interface LayoutProps {
 }
 
 export default function Layout({ children }: LayoutProps) {
+  const pathname = usePathname();
+
+  const handleHomeClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    console.log('Current path:', pathname);
+    if (pathname !== '/') {
+      window.location.href = '/';
+    }
+  };
+
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950">
       <header className="bg-white/95 dark:bg-gray-900/95 shadow-sm backdrop-blur-sm">
@@ -16,7 +27,12 @@ export default function Layout({ children }: LayoutProps) {
           <div className="flex justify-between h-16">
             <div className="flex">
               <div className="flex-shrink-0 flex items-center">
-                <Link href="/" className="text-xl font-bold text-indigo-600 dark:text-indigo-400">
+                <Link
+                  href="/"
+                  onClick={handleHomeClick}
+                  className="text-xl font-bold text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 transition-colors duration-200 flex items-center"
+                >
+                  <span className="mr-2">📚</span>
                   Stacked
                 </Link>
               </div>
