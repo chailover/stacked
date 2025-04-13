@@ -167,10 +167,7 @@ export default function GPACalculator() {
     return range ? range.points : 0;
   };
 
-  const calculateQualityPoints = (grade: Grade, forUnweighted: boolean = false): number => {
-    const points = getGradePoints(grade.numericalGrade, grade.weight, forUnweighted);
-    return points * grade.credits;
-  };
+
 
   const calculateGPA = (grades: Grade[], useWeighted: boolean = true) => {
     let totalPoints = 0;

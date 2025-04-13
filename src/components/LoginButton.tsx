@@ -2,7 +2,6 @@
 
 import { useAuth } from '@/contexts/AuthContext';
 import { UserCircleIcon } from '@heroicons/react/24/outline';
-import Image from 'next/image';
 import { useState } from 'react';
 
 export default function LoginButton() {
