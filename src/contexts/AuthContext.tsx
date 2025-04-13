@@ -4,11 +4,10 @@ import { createContext, useContext, useEffect, useState } from 'react';
 import { 
   User,
   signInWithPopup,
-  GoogleAuthProvider,
   signOut,
   onAuthStateChanged
 } from 'firebase/auth';
-import { auth } from '@/lib/firebase';
+import { auth, googleAuthProvider } from '@/lib/firebase';
 
 interface AuthContextType {
   user: User | null;
@@ -48,13 +47,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const signInWithGoogle = async () => {
     setIsSigningIn(true);
     setError(null);
-    const provider = new GoogleAuthProvider();
-    provider.setCustomParameters({
+    googleAuthProvider.setCustomParameters({
       prompt: 'select_account'
     });
     
     try {
-      await signInWithPopup(auth, provider);
+      await signInWithPopup(auth, googleAuthProvider);
     } catch (error: unknown) {
       console.error('Error signing in with Google:', error);
       setError(error instanceof Error ? error.message : 'Failed to sign in with Google');
