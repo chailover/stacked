@@ -1,5 +1,5 @@
 import { initializeApp, getApps, FirebaseApp } from 'firebase/app';
-import { getAuth, Auth, User } from 'firebase/auth';
+import { getAuth, Auth, User, AuthProvider } from 'firebase/auth';
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -21,7 +21,7 @@ if (typeof window !== 'undefined' && firebaseConfig.apiKey) {
   // Mock auth for static generation
   interface MockAuth {
     onAuthStateChanged: (callback: (user: User | null) => void) => () => void;
-    signInWithPopup: (provider: any) => Promise<never>;
+    signInWithPopup: (provider: AuthProvider) => Promise<never>;
     signOut: () => Promise<void>;
   }
 
