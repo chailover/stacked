@@ -41,7 +41,7 @@ export function useLocalStorage<T>(key: string, initialValue: T): [T, (value: T)
 
   useEffect(() => {
     setStoredValue(readValue());
-  }, []);
+  }, [key, initialValue]);
 
   return [storedValue, setValue];
 } 

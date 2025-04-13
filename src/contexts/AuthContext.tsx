@@ -55,9 +55,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     
     try {
       await signInWithPopup(auth, provider);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error signing in with Google:', error);
-      setError(error.message || 'Failed to sign in with Google');
+      setError(error instanceof Error ? error.message : 'Failed to sign in with Google');
     } finally {
       setIsSigningIn(false);
     }
@@ -66,9 +66,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const logout = async () => {
     try {
       await signOut(auth);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error signing out:', error);
-      setError(error.message || 'Failed to sign out');
+      setError(error instanceof Error ? error.message : 'Failed to sign out');
     }
   };
 

@@ -3,6 +3,7 @@
 import { useAuth } from '@/contexts/AuthContext';
 import { UserCircleIcon } from '@heroicons/react/24/outline';
 import { useState } from 'react';
+import Image from 'next/image';
 
 export default function LoginButton() {
   const { user, signInWithGoogle, logout, isSigningIn, error } = useAuth();
@@ -13,10 +14,12 @@ export default function LoginButton() {
       {user ? (
         <div className="flex items-center space-x-2">
           {user.photoURL && !imageError ? (
-            <img
+            <Image
               src={user.photoURL}
               alt={user.displayName || 'User'}
-              className="h-8 w-8 rounded-full object-cover"
+              width={32}
+              height={32}
+              className="rounded-full object-cover"
               onError={() => setImageError(true)}
               referrerPolicy="no-referrer"
             />
