@@ -10,8 +10,20 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
-// Initialize Firebase
-const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
-const auth = getAuth(app);
+// Initialize Firebase only if we have the required config
+let app;
+let auth;
+
+if (typeof window !== 'undefined' && firebaseConfig.apiKey) {
+  app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
+  auth = getAuth(app);
+} else {
+  // Mock auth for static generation
+  auth = {
+    onAuthStateChanged: () => () => {},
+    signInWithPopup: () => Promise.reject(new Error('Firebase not initialized')),
+    signOut: () => Promise.reject(new Error('Firebase not initialized')),
+  } as any;
+}
 
 export { app, auth }; 
