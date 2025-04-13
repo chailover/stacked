@@ -1,5 +1,8 @@
+'use client';
+
 import React from 'react';
 import Link from 'next/link';
+import LoginButton from '@/components/LoginButton';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -18,7 +21,8 @@ export default function Layout({ children }: LayoutProps) {
                 </Link>
               </div>
             </div>
-            <div className="flex items-center">
+            <div className="flex items-center space-x-4">
+              <LoginButton />
               <span className="text-sm text-gray-500 dark:text-gray-400">
                 by Abdullah Khokhar
               </span>

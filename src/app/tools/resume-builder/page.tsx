@@ -4,6 +4,7 @@ import { useState } from 'react';
 import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
 import { useLocalStorage } from '@/utils/useLocalStorage';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface PersonalInfo {
   firstName: string;
@@ -121,6 +122,7 @@ const inputClassName = "mt-1 block w-full rounded-lg border-gray-300 shadow-sm f
 const textareaClassName = "mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white px-4 py-3";
 
 const ResumeBuilder = () => {
+  const { user, signInWithGoogle } = useAuth();
   const [personalInfo, setPersonalInfo] = useLocalStorage<PersonalInfo>('resume-personal-info', {
     firstName: '',
     lastName: '',
@@ -201,6 +203,11 @@ const ResumeBuilder = () => {
   };
 
   const exportToPDF = async () => {
+    if (!user) {
+      showToast('Please sign in to export your resume', 'error');
+      return;
+    }
+
     if (isExporting) return;
     setIsExporting(true);
 
@@ -1254,18 +1261,34 @@ const ResumeBuilder = () => {
               <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
                 Resume Preview
               </h2>
-              <button
-                onClick={exportToPDF}
-                disabled={isExporting}
-                className={`px-6 py-2.5 rounded-lg text-white transition-all duration-200 ${
-                  isExporting 
-                    ? 'bg-gray-400 cursor-not-allowed'
-                    : 'bg-emerald-600 hover:bg-emerald-700'
-                }`}
-                title={isExporting ? "Exporting resume..." : "Export resume as PDF"}
-              >
-                {isExporting ? 'Exporting...' : 'Export PDF'}
-              </button>
+              <div className="flex items-center gap-4">
+                {!user && (
+                  <button
+                    onClick={signInWithGoogle}
+                    className="px-6 py-2.5 rounded-lg text-white bg-indigo-600 hover:bg-indigo-700 transition-all duration-200"
+                  >
+                    Sign in to Export
+                  </button>
+                )}
+                <button
+                  onClick={exportToPDF}
+                  disabled={isExporting || !user}
+                  className={`px-6 py-2.5 rounded-lg text-white transition-all duration-200 ${
+                    isExporting || !user
+                      ? 'bg-gray-400 cursor-not-allowed'
+                      : 'bg-emerald-600 hover:bg-emerald-700'
+                  }`}
+                  title={
+                    !user 
+                      ? "Sign in to export resume" 
+                      : isExporting 
+                        ? "Exporting resume..." 
+                        : "Export resume as PDF"
+                  }
+                >
+                  {isExporting ? 'Exporting...' : 'Export PDF'}
+                </button>
+              </div>
             </div>
             <div 
               id="resume-preview"
