@@ -2,12 +2,16 @@
 
 import { useAuth } from '@/contexts/AuthContext';
 import { UserCircleIcon } from '@heroicons/react/24/outline';
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import Image from 'next/image';
 
 export default function LoginButton() {
   const { user, signInWithGoogle, logout, isSigningIn, error } = useAuth();
   const [imageError, setImageError] = useState(false);
+
+  const handleImageError = useCallback(() => {
+    setImageError(true);
+  }, []);
 
   return (
     <div className="flex items-center space-x-4">
@@ -20,8 +24,9 @@ export default function LoginButton() {
               width={32}
               height={32}
               className="rounded-full object-cover"
-              onError={() => setImageError(true)}
+              onError={handleImageError}
               referrerPolicy="no-referrer"
+              priority
             />
           ) : (
             <div className="h-8 w-8 rounded-full bg-indigo-100 dark:bg-indigo-900 flex items-center justify-center">
@@ -35,6 +40,7 @@ export default function LoginButton() {
             <button
               onClick={logout}
               className="text-sm text-gray-500 hover:text-indigo-600 dark:hover:text-indigo-400"
+              disabled={isSigningIn}
             >
               Sign Out
             </button>
