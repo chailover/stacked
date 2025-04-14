@@ -4,13 +4,27 @@ import { getAuth, Auth, User, AuthProvider, GoogleAuthProvider } from 'firebase/
 // Helper to check if we're in production
 const isProduction = process.env.NODE_ENV === 'production';
 
+// Helper to get environment variable with better error message
+const getEnvVar = (key: string): string => {
+  const value = process.env[key];
+  if (!value) {
+    const error = `Missing required environment variable: ${key}`;
+    if (isProduction) {
+      console.error(error);
+    } else {
+      throw new Error(error);
+    }
+  }
+  return value || '';
+};
+
 const firebaseConfig = {
-  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
-  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+  apiKey: getEnvVar('NEXT_PUBLIC_FIREBASE_API_KEY'),
+  authDomain: getEnvVar('NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN'),
+  projectId: getEnvVar('NEXT_PUBLIC_FIREBASE_PROJECT_ID'),
+  storageBucket: getEnvVar('NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET'),
+  messagingSenderId: getEnvVar('NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID'),
+  appId: getEnvVar('NEXT_PUBLIC_FIREBASE_APP_ID'),
 };
 
 // Log configuration in development only
@@ -24,32 +38,11 @@ if (!isProduction) {
   });
 }
 
-// Validate Firebase configuration
-const validateFirebaseConfig = () => {
-  const requiredFields = ['apiKey', 'authDomain', 'projectId', 'appId'];
-  const missingFields = requiredFields.filter(field => !firebaseConfig[field as keyof typeof firebaseConfig]);
-  
-  if (missingFields.length > 0) {
-    const error = `Missing required Firebase configuration: ${missingFields.join(', ')}`;
-    if (isProduction) {
-      console.error(error);
-    } else {
-      throw new Error(error);
-    }
-    return false;
-  }
-  return true;
-};
-
 // Initialize Firebase
 let app: FirebaseApp;
 let auth: Auth;
 
 if (typeof window !== 'undefined') {
-  if (!validateFirebaseConfig()) {
-    throw new Error('Firebase configuration is invalid. Please check your environment variables.');
-  }
-
   try {
     if (!getApps().length) {
       if (!isProduction) {
